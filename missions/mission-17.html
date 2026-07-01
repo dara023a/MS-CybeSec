@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+
+<html lang="id">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>MISSION-17 — Building Attack &amp; Defense — Wireshark &amp; Wazuh Part 1 | NEXUS-01 Cyber Security Engineer Bootcamp</title>
+<meta content="menghubungkan aktivitas lab ofensif dengan bukti jaringan dan alert defensif." name="description"/>
+<link href="../assets/css/style.css" rel="stylesheet"/>
+</head>
+<body data-page="mission-17">
+<a class="skip-link" href="#main-content">Skip to content</a>
+<div class="boot-loader"><div class="boot-box"><div class="boot-title">SYSTEM BREACH DETECTED // EDUCATIONAL MODE</div><div class="boot-lines"></div></div></div>
+<div class="progress-global"></div>
+<header class="topbar">
+<a class="brand" href="../index.html"><span class="brand-mark">N</span><span>NEXUS-01</span></a>
+<div class="archive-title">CYBER SECURITY ENGINEER BOOTCAMP</div>
+<button aria-controls="sidebar" aria-expanded="false" aria-label="Open menu" class="mobile-toggle" type="button">MENU</button>
+<div class="status"><span class="status-dot"></span><span>STATUS: TRAINING MODE</span></div>
+</header><div aria-label="NEXUS-01 threat ticker" aria-live="off" class="threat-ticker" role="status">
+<div class="ticker-track">
+<span>[MONITORING ACTIVE] TRAINING DATABASE SYNCHRONIZED // [AUTHORIZED LAB ONLY] ALL SIMULATIONS ARE RESTRICTED TO LEGAL ENVIRONMENTS // [THREAT ANALYSIS] WEB SECURITY MODULES ONLINE // [SECURE] RECRUIT ACCESS VALIDATED // [BLUE TEAM NODE] SIEM TELEMETRY STREAM ENABLED // </span>
+<span>[MONITORING ACTIVE] TRAINING DATABASE SYNCHRONIZED // [AUTHORIZED LAB ONLY] ALL SIMULATIONS ARE RESTRICTED TO LEGAL ENVIRONMENTS // [THREAT ANALYSIS] WEB SECURITY MODULES ONLINE // [SECURE] RECRUIT ACCESS VALIDATED // [BLUE TEAM NODE] SIEM TELEMETRY STREAM ENABLED // </span>
+</div>
+</div>
+<div aria-hidden="true" class="mobile-overlay"></div>
+<div class="shell">
+<aside aria-label="Mission directory" class="sidebar" id="sidebar">
+<button aria-label="Close menu" class="sidebar-close" type="button">Close Directory</button>
+<div class="side-panel">
+<strong>NEXUS-01</strong>
+<span class="muted">Cyber Security Engineer learning dashboard. Authorized lab mode only.</span>
+<div class="side-progress"><i></i></div>
+<small>SCROLL SYNC: <span data-scroll-percent="">0%</span></small>
+</div>
+<p class="side-label">Mission Directory</p>
+<ul class="nav-list"><li><a class="" href="../index.html"><span>ARCHIVE HOME</span><span>ROOT</span></a></li><li class="nav-group">Foundation <span>Day 1–4</span></li><li><a class="" data-mission-nav="mission-01" href="../missions/mission-01.html" title="Cyber Security Fundamental &amp; Understanding Penetration Testing"><span>MISSION-01</span><span>Beginner</span></a></li><li><a class="" data-mission-nav="mission-02" href="../missions/mission-02.html" title="Introduction &amp; Understanding How Linux Works"><span>MISSION-02</span><span>Beginner</span></a></li><li><a class="" data-mission-nav="mission-03" href="../missions/mission-03.html" title="Networking Fundamental"><span>MISSION-03</span><span>Beginner</span></a></li><li><a class="" data-mission-nav="mission-04" href="../missions/mission-04.html" title="Fundamental Web Framework &amp; Cara Kerja Aplikasi"><span>MISSION-04</span><span>Beginner+</span></a></li><li class="nav-group">Web Security <span>Day 5–10</span></li><li><a class="" data-mission-nav="mission-05" href="../missions/mission-05.html" title="Information Disclosure &amp; Sensitive Data Exposure"><span>MISSION-05</span><span>Beginner+</span></a></li><li><a class="" data-mission-nav="mission-06" href="../missions/mission-06.html" title="Exploiting Broken Authentication &amp; Session Management; IDOR &amp; Broken Access Control"><span>MISSION-06</span><span>Intermediate</span></a></li><li><a class="" data-mission-nav="mission-07" href="../missions/mission-07.html" title="CSRF &amp; Unrestricted File Upload"><span>MISSION-07</span><span>Intermediate</span></a></li><li><a class="" data-mission-nav="mission-08" href="../missions/mission-08.html" title="SQL Injection Ultimate"><span>MISSION-08</span><span>Intermediate</span></a></li><li><a class="" data-mission-nav="mission-09" href="../missions/mission-09.html" title="Clickjacking, HTML Injection &amp; XSS"><span>MISSION-09</span><span>Intermediate</span></a></li><li><a class="" data-mission-nav="mission-10" href="../missions/mission-10.html" title="Server-Side Request Forgery"><span>MISSION-10</span><span>Intermediate+</span></a></li><li class="nav-group">CTF &amp; Pentest Lab <span>Day 11–13</span></li><li><a class="" data-mission-nav="mission-11" href="../missions/mission-11.html" title="CTF — Capture The Flag"><span>MISSION-11</span><span>Intermediate</span></a></li><li><a class="" data-mission-nav="mission-12" href="../missions/mission-12.html" title="Hacking Server Machine Series"><span>MISSION-12</span><span>Intermediate+</span></a></li><li><a class="" data-mission-nav="mission-13" href="../missions/mission-13.html" title="Bug Bounty Fun &amp; Profit"><span>MISSION-13</span><span>Intermediate</span></a></li><li class="nav-group">Mobile &amp; AI <span>Day 14–16</span></li><li><a class="" data-mission-nav="mission-14" href="../missions/mission-14.html" title="Android Penetration Testing — Static Analysis"><span>MISSION-14</span><span>Intermediate+</span></a></li><li><a class="" data-mission-nav="mission-15" href="../missions/mission-15.html" title="Android Penetration Testing — Dynamic Analysis"><span>MISSION-15</span><span>Intermediate+</span></a></li><li><a class="" data-mission-nav="mission-16" href="../missions/mission-16.html" title="AI Agents for Penetration Testing — Practical Usage"><span>MISSION-16</span><span>Advanced Intro</span></a></li><li class="nav-group">Blue Team &amp; Forensics <span>Day 17–19</span></li><li><a class="active" data-mission-nav="mission-17" href="../missions/mission-17.html" title="Building Attack &amp; Defense — Wireshark &amp; Wazuh Part 1"><span>MISSION-17</span><span>Intermediate+</span></a></li><li><a class="" data-mission-nav="mission-18" href="../missions/mission-18.html" title="Analyze Attack &amp; Defense — Wireshark &amp; Wazuh Part 2"><span>MISSION-18</span><span>Advanced Intro</span></a></li><li><a class="" data-mission-nav="mission-19" href="../missions/mission-19.html" title="Digital Forensics &amp; Cyber Attack Investigation"><span>MISSION-19</span><span>Advanced Intro</span></a></li><li class="nav-group">Career <span>Day 20</span></li><li><a class="" data-mission-nav="mission-20" href="../missions/mission-20.html" title="Grooming CV, LinkedIn &amp; Karier Talenta Keamanan Siber"><span>MISSION-20</span><span>Beginner+</span></a></li><li class="nav-group">Databases <span>DB</span></li><li><a class="" href="../bonus.html"><span>BONUS ARCHIVE</span><span>+7</span></a></li><li><a class="" href="../glossary.html"><span>GLOSSARY</span><span>DB</span></a></li><li><a class="" href="../tools.html"><span>TOOLS</span><span>DB</span></a></li><li><a class="" href="../references.html"><span>REFERENCES</span><span>DB</span></a></li><li><a class="" href="../portfolio.html"><span>PORTFOLIO</span><span>BUILD</span></a></li><li><a class="" href="../progress.html"><span>PROGRESS</span><span>TRACK</span></a></li></ul>
+<div class="side-panel" style="margin-top:18px">
+<strong>LEGAL FILTER</strong>
+<span class="muted">Semua praktik hanya untuk CTF, lab pribadi, sistem sendiri, atau lingkungan yang memiliki izin tertulis.</span>
+</div>
+</aside>
+<main class="main" id="main-content" tabindex="-1">
+<div class="container">
+<section class="hero reveal">
+<div class="hero-grid"></div><div aria-hidden="true" class="packet-flow">
+<span class="packet-line packet-line-1"><i>DNS</i></span>
+<span class="packet-line packet-line-2"><i>HTTP</i></span>
+<span class="packet-line packet-line-3"><i>TLS</i></span>
+<span class="packet-line packet-line-4"><i>SIEM</i></span>
+<span class="packet-line packet-line-5"><i>PCAP</i></span>
+</div>
+<div class="hero-content">
+<div class="kicker"><span class="pill">MISSION-17</span><span class="pill">Blue Team &amp; Forensics</span><span class="pill">Intermediate+</span></div>
+<h1 class="mega-title"><span class="glitch" data-text="BUILDING">BUILDING</span><br/>ATTACK &amp; DEFENSE — WIRESHARK &amp; WAZUH PART 1</h1>
+<p class="subtitle">Mission focus: menghubungkan aktivitas lab ofensif dengan bukti jaringan dan alert defensif. Arsip ini membangun fondasi praktis, defensif, dan legal agar recruit bisa belajar bertahap dari konsep ke portofolio.</p>
+<div class="cta-row"><a class="btn" href="#briefing">Scan Objectives</a><a class="btn ghost" href="mission-18.html">Next Mission</a></div>
+<div class="progress-widget" data-progress-widget="mission-17">
+<label><input class="progress-check" data-progress-id="mission-17" type="checkbox"/> <span>Mark as completed</span></label>
+<select aria-label="Status MISSION-17" class="progress-select" data-status-id="mission-17">
+<option>Not Started</option><option>Learning</option><option>Completed</option><option>Need Review</option>
+</select>
+<span class="status-micro" data-status-label="mission-17">SYNCING...</span>
+</div><div aria-label="Mission status HUD" class="mission-status-hud card" data-mission-hud="mission-17">
+<div class="hud-title">MISSION STATUS</div>
+<div class="hud-grid">
+<div class="hud-item"><span>ACCESS LEVEL</span><b>RECRUIT</b></div>
+<div class="hud-item"><span>LAB MODE</span><b>ENABLED</b></div>
+<div class="hud-item"><span>RISK LEVEL</span><b>CONTROLLED</b></div>
+<div class="hud-item"><span>PATH</span><b>Blue Team &amp; Forensics</b></div>
+<div class="hud-item"><span>DIFFICULTY</span><b>Intermediate+</b></div>
+<div class="hud-item"><span>MISSION CODE</span><b>MISSION-17</b></div>
+<div class="hud-item wide"><span>PROGRESS</span><b data-status-label="mission-17">SYNCING...</b></div>
+</div>
+</div>
+</div>
+</section>
+<section class="section reveal" id="briefing">
+<div class="section-title"><h2>A+B // Mission Briefing &amp; Foundation</h2><span class="section-code">MISSION-17::OPEN</span></div>
+<div class="card-grid two">
+<div class="card">
+<div class="num">A</div>
+<h3>Mission Briefing</h3>
+<p>Building Attack &amp; Defense — Wireshark &amp; Wazuh Part 1 penting karena menghubungkan aktivitas lab ofensif dengan bukti jaringan dan alert defensif. Hubungannya dengan dunia kerja: topik ini muncul dalam laporan keamanan, analisis risiko, hardening, monitoring, incident response, atau portofolio teknis.</p>
+<div class="tag-row"><span class="badge">Day 17</span><span class="badge">Blue Team</span><span class="badge">Intermediate+</span></div>
+</div>
+<div class="terminal">[MISSION] MISSION-17
+[PATH] Blue Team &amp; Forensics
+[FOCUS] menghubungkan aktivitas lab ofensif dengan bukti jaringan dan alert defensif.
+[LEGAL] authorized_lab_only = true
+[RESULT] recruit memahami konteks sebelum menjalankan tools</div>
+</div><div class="terminal live-terminal-log mission-live-log" data-live-log=""><span class="log-line">&gt;_ loading mission-17 intelligence file...</span><span class="log-line">&gt;_ mapping objectives to legal lab boundaries...</span><span class="log-line">&gt;_ syncing recruit progress state...</span><span class="log-line">&gt;_ enabling defensive analysis overlay...</span><span class="log-line">&gt;_ evidence notes ready for portfolio output.</span></div><div aria-label="SIEM alert feed" class="siem-alert-feed card compact">
+<div class="feed-head"><span>SIEM ALERT FEED</span><small>LAB TELEMETRY // SIMULATED</small></div>
+<div class="alert-row"><b class="sev info">INFO</b><span>HTTP request inspected by proxy</span></div>
+<div class="alert-row"><b class="sev low">LOW</b><span>DNS query anomaly detected in lab traffic</span></div>
+<div class="alert-row"><b class="sev medium">MEDIUM</b><span>Multiple failed login attempts simulated</span></div>
+<div class="alert-row"><b class="sev high">HIGH</b><span>SQL injection pattern blocked in training lab</span></div>
+<div class="alert-row"><b class="sev info">INFO</b><span>File integrity baseline synchronized</span></div>
+<div class="alert-row"><b class="sev low">LOW</b><span>Suspicious user-agent observed in PCAP sample</span></div>
+</div>
+<div class="card" style="margin-top:18px">
+<div class="num">B</div>
+<h3>Beginner Foundation</h3>
+<p>Wireshark digunakan untuk melihat paket jaringan, sedangkan Wazuh membantu mengumpulkan log dan membuat alert. PCAP adalah file rekaman paket. Packet adalah unit data yang lewat di jaringan. Dengan melihat trafik, recruit belajar bahwa aktivitas keamanan meninggalkan jejak.</p>
+</div>
+</section>
+<section class="section reveal" id="concepts">
+<div class="section-title"><h2>C // Core Concepts</h2><span class="section-code">TOPIC MAP</span></div>
+<div class="card"><h3>Subtopik Utama</h3><ul class="topic-list"><li>Introduction to Wazuh</li><li>Introduction to Wireshark</li><li>Network traffic analysis</li><li>PCAP</li><li>Packet</li><li>Protocol</li><li>Filtering dasar di Wireshark</li><li>Case study: scanning activity</li><li>Case study: XSS attack traffic</li><li>Case study: SQL injection traffic</li><li>Malicious DNS traffic opsional</li><li>Setting up lab environment dengan VirtualBox</li><li>Simulasi attack legal</li><li>Capturing network traffic</li><li>Analyzing PCAP</li><li>Cara membaca pola serangan</li><li>Hubungan offensive dan defensive</li></ul></div>
+</section><section class="section reveal" id="attack-defense-diagram">
+<div class="section-title"><h2>Attack vs Defense Diagram</h2><span class="section-code">MISSION-17::LEARNING FLOW</span></div>
+<div class="diagram-box attack-defense-diagram">
+<div class="diagram-kicker">LEGAL LAB ONLY // CONCEPTUAL SECURITY FLOW</div>
+<div class="flow diagram-flow"><div class="step"><b>OBSERVATION</b><span>Traffic, log, PCAP, alert, atau artifact dikumpulkan dari simulasi aman.</span></div><div class="step"><b>TELEMETRY</b><span>Sinyal dikaitkan dengan waktu, host, user, proses, dan konteks lab.</span></div><div class="step"><b>DETECTION SIGNAL</b><span>Anomali dibandingkan dengan baseline, rule, IOC, atau MITRE ATT&amp;CK.</span></div><div class="step"><b>DEFENSIVE ACTION</b><span>Triage, containment konseptual, hardening, dan rule tuning dilakukan.</span></div><div class="step"><b>REPORTING</b><span>Hasil ditulis menjadi incident analysis atau forensic report.</span></div></div>
+</div>
+</section>
+<section class="section reveal" id="deep-dive">
+<div class="section-title"><h2>D+E // Deep Dive &amp; Technical Notes</h2><span class="section-code">ANALYSIS NODE</span></div>
+<div class="card-grid two">
+<div class="card"><div class="num">D</div><h3>Deep Dive Material</h3><p>Traffic analysis dimulai dari baseline: apa yang normal? Setelah itu baru membandingkan pola scanning, request web mencurigakan, query DNS tidak biasa, atau percobaan SQLi/XSS di lab. Filter Wireshark membantu menyaring protocol, IP, port, atau HTTP. Wazuh membantu melihat log host dan alert. Tujuannya bukan hanya menemukan serangan, tetapi memahami bukti dan konteks.</p><br/><p>Hubungan offensive dan defensive: recruit belajar memahami root cause, dampak, bukti teknis, serta cara mengubah temuan menjadi rekomendasi perbaikan.</p></div>
+<div class="card"><div class="num">E</div><h3>Technical Notes</h3><p><b class="key">Tools:</b></p><ul class="tool-list"><li>Wireshark</li><li>Wazuh</li><li>VirtualBox</li><li>OWASP Juice Shop lokal</li><li>DVWA lokal</li><li>tcpdump untuk lab</li><li>Wireshark display filters</li></ul><p><b class="key">Cara membaca output:</b> pahami konteks, cek error, bandingkan dengan dokumentasi, dan jangan langsung menyimpulkan tanpa bukti pendukung.</p><p><b class="key">Error umum:</b> salah scope, service belum berjalan, izin file kurang, proxy belum aktif, sertifikat belum dipercaya, atau lab belum dikonfigurasi.</p></div>
+</div>
+</section>
+<section class="section reveal" id="lab">
+<div class="section-title"><h2>F // Safe Hands-On Lab</h2><span class="section-code">AUTHORIZED LAB ONLY</span></div>
+<div class="lab-safety"><b>[LAB SAFETY BANNER]</b><br/>Praktik hanya boleh dilakukan pada lab legal, CTF, atau sistem yang kamu miliki/diizinkan untuk diuji. Jangan melakukan scan, exploit, brute force, bypass, atau testing ke sistem publik tanpa izin.</div>
+<div class="terminal warn">[INFO] Tujuan lab: memahami konsep melalui simulasi legal.
+[OBJECTIVE] Bangun lab lokal: satu VM attacker legal, satu VM target rentan lokal, satu sensor/host monitor. Jalankan simulasi yang diizinkan di lab, capture traffic, lalu cari pola HTTP, DNS, atau scanning. Jangan capture jaringan orang lain.
+[EXPECTED RESULT] recruit bisa menjelaskan apa yang terjadi, bukan hanya memperoleh output tools.
+[BOUNDARY] target publik / sistem tanpa izin = BLOCKED</div>
+</section>
+<section class="section reveal" id="defense-context">
+<div class="section-title"><h2>G+H // Defensive &amp; Real-World Context</h2><span class="section-code">BLUE TEAM VIEW</span></div>
+<div class="card-grid two">
+<div class="card"><div class="num">G</div><h3>Defensive Perspective</h3><p>Defender membuat baseline, filter, alert, dan playbook. Aktivitas scanning dapat terlihat sebagai koneksi ke banyak port, XSS/SQLi sebagai pola request tertentu di lab, dan DNS mencurigakan sebagai query domain tidak biasa.</p><br/><p><b class="key">Best practice:</b> catat bukti, pahami risiko, terapkan mitigasi berlapis, dan review konfigurasi secara berkala.</p></div>
+<div class="card"><div class="num">H</div><h3>Real-World Context</h3><p>Di organisasi nyata, kelemahan pada area ini dapat berdampak pada kebocoran data, gangguan layanan, reputasi, biaya pemulihan, atau risiko hukum. Karena itu setiap temuan harus dikaitkan dengan dampak bisnis dan prioritas remediation.</p></div>
+</div>
+</section>
+<section class="section reveal" id="mistakes">
+<div class="section-title"><h2>I // Common Mistakes</h2><span class="section-code">ERROR PATTERN</span></div>
+<div class="card warn"><h3>Kesalahan yang Sering Terjadi</h3><ul><li>Mengejar tools sebelum memahami konsep dan scope.</li><li>Tidak membedakan lab legal dengan target publik.</li><li>Tidak mencatat langkah, asumsi, dan hasil observasi.</li><li>Menganggap output tools selalu benar tanpa validasi manual.</li><li>Lupa menuliskan dampak, mitigasi, dan batasan etika pada laporan.</li></ul></div>
+</section>
+<section class="section reveal" id="quiz">
+<div class="section-title"><h2>J // Mini Quiz</h2><span class="section-code">ACCESS VALIDATION</span></div>
+<div class="quiz-list"><div class="quiz-item">
+<button aria-controls="quiz-mission-17-1" aria-expanded="false" class="quiz-q" type="button"><span>1. Apa tujuan utama Building Attack &amp; Defense — Wireshark &amp; Wazuh Part 1?</span><b>OPEN</b></button>
+<div class="quiz-a" id="quiz-mission-17-1"><b>Jawaban &amp; pembahasan:</b> Tujuannya adalah menghubungkan aktivitas lab ofensif dengan bukti jaringan dan alert defensif.</div>
+</div><div class="quiz-item">
+<button aria-controls="quiz-mission-17-2" aria-expanded="false" class="quiz-q" type="button"><span>2. Mengapa materi Introduction to Wazuh penting untuk pemula?</span><b>OPEN</b></button>
+<div class="quiz-a" id="quiz-mission-17-2"><b>Jawaban &amp; pembahasan:</b> Karena konsep ini menjadi fondasi untuk memahami risiko, alur kerja, dan keputusan teknis pada mission ini.</div>
+</div><div class="quiz-item">
+<button aria-controls="quiz-mission-17-3" aria-expanded="false" class="quiz-q" type="button"><span>3. Jelaskan hubungan Introduction to Wireshark dengan cybersecurity.</span><b>OPEN</b></button>
+<div class="quiz-a" id="quiz-mission-17-3"><b>Jawaban &amp; pembahasan:</b> Konsep tersebut membantu recruit melihat bagaimana sistem bekerja, di mana risiko muncul, dan bagaimana kontrol keamanan diterapkan.</div>
+</div><div class="quiz-item">
+<button aria-controls="quiz-mission-17-4" aria-expanded="false" class="quiz-q" type="button"><span>4. Apa batasan legal paling penting pada mission ini?</span><b>OPEN</b></button>
+<div class="quiz-a" id="quiz-mission-17-4"><b>Jawaban &amp; pembahasan:</b> Semua praktik hanya boleh dilakukan pada lab lokal, CTF, platform resmi, sistem milik sendiri, atau target yang secara eksplisit mengizinkan pengujian.</div>
+</div><div class="quiz-item">
+<button aria-controls="quiz-mission-17-5" aria-expanded="false" class="quiz-q" type="button"><span>5. Sebutkan minimal dua tools yang relevan.</span><b>OPEN</b></button>
+<div class="quiz-a" id="quiz-mission-17-5"><b>Jawaban &amp; pembahasan:</b> Tools relevan: Wireshark, Wazuh, VirtualBox. Tools harus dipakai sesuai dokumentasi dan scope legal.</div>
+</div><div class="quiz-item">
+<button aria-controls="quiz-mission-17-6" aria-expanded="false" class="quiz-q" type="button"><span>6. Apa kesalahan umum pemula saat mempelajari topik ini?</span><b>OPEN</b></button>
+<div class="quiz-a" id="quiz-mission-17-6"><b>Jawaban &amp; pembahasan:</b> Melompat ke tools tanpa memahami konsep, tidak mencatat langkah, tidak membaca error, dan mengabaikan aspek mitigasi.</div>
+</div><div class="quiz-item">
+<button aria-controls="quiz-mission-17-7" aria-expanded="false" class="quiz-q" type="button"><span>7. Bagaimana defender melihat isu pada mission ini?</span><b>OPEN</b></button>
+<div class="quiz-a" id="quiz-mission-17-7"><b>Jawaban &amp; pembahasan:</b> Defender melihatnya melalui log, konfigurasi, kontrol akses, baseline perilaku, dan proses mitigasi yang terdokumentasi.</div>
+</div><div class="quiz-item">
+<button aria-controls="quiz-mission-17-8" aria-expanded="false" class="quiz-q" type="button"><span>8. Apa output portofolio dari mission ini?</span><b>OPEN</b></button>
+<div class="quiz-a" id="quiz-mission-17-8"><b>Jawaban &amp; pembahasan:</b> Buat PCAP analysis note: tujuan lab, filter yang dipakai, paket penting, screenshot Wireshark, interpretasi, dan ide rule deteksi.</div>
+</div><div class="quiz-item">
+<button aria-controls="quiz-mission-17-9" aria-expanded="false" class="quiz-q" type="button"><span>9. Kapan recruit boleh melanjutkan ke mission berikutnya?</span><b>OPEN</b></button>
+<div class="quiz-a" id="quiz-mission-17-9"><b>Jawaban &amp; pembahasan:</b> Ketika sudah memahami istilah utama, menyelesaikan lab aman, bisa menjelaskan risiko, dan bisa menulis ringkasan mitigasi.</div>
+</div><div class="quiz-item">
+<button aria-controls="quiz-mission-17-10" aria-expanded="false" class="quiz-q" type="button"><span>10. Apa prinsip etika yang harus selalu diingat?</span><b>OPEN</b></button>
+<div class="quiz-a" id="quiz-mission-17-10"><b>Jawaban &amp; pembahasan:</b> Learn to secure, not to harm. Jangan menyerang sistem nyata atau publik tanpa izin tertulis.</div>
+</div></div>
+</section>
+<section class="section reveal" id="checklist-portfolio">
+<div class="section-title"><h2>K+L // Checklist &amp; Portfolio Task</h2><span class="section-code">EVIDENCE BUILD</span></div>
+<div class="card-grid two">
+<div class="card"><div class="num">K</div><h3>Checklist</h3><ul class="check-list"><li>Saya bisa menjelaskan tujuan MISSION-17 dengan bahasa sederhana.</li><li>Saya memahami istilah utama dan analoginya.</li><li>Saya sudah membaca subtopik inti dan hubungan antar konsep.</li><li>Saya sudah mencoba lab aman atau simulasi legal.</li><li>Saya bisa membaca output tools dasar yang relevan.</li><li>Saya bisa menjelaskan perspektif defender dan mitigasinya.</li><li>Saya sudah membuat artefak portofolio kecil.</li></ul></div>
+<div class="card"><div class="num">L</div><h3>Portfolio Task</h3><p>Buat PCAP analysis note: tujuan lab, filter yang dipakai, paket penting, screenshot Wireshark, interpretasi, dan ide rule deteksi.</p><br/><p><b class="key">Dokumentasikan:</b> tujuan, scope legal, tools, langkah konseptual, screenshot aman, analisis dampak, mitigasi, dan refleksi.</p></div>
+</div>
+</section>
+<section class="section reveal" id="expanded-study">
+<div class="section-title"><h2>O // Textbook Chapter</h2><span class="section-code">DEEP MATERIAL NODE</span></div>
+<article class="card textbook-chapter scan-reveal" aria-labelledby="chapter-mission-17">
+<div class="chapter-kicker">FULL CHAPTER MODE</div>
+<h3 id="chapter-mission-17">Wireshark dan Wazuh Part 1: Membaca Traffic sebagai Sinyal Keamanan</h3>
+<p class="chapter-lead">Bab ini membahas packet, PCAP, protocol, filtering, dan hubungan antara aktivitas ofensif di lab dengan sinyal defensif. Recruit belajar melihat serangan sebagai pola traffic, bukan hanya event terpisah.</p>
+<h4>Packet capture sebagai bukti jaringan</h4>
+<p><b>PCAP</b> adalah rekaman paket jaringan. Wireshark membantu membuka dan menganalisis PCAP. Setiap paket memiliki layer: frame, Ethernet, IP, TCP/UDP, dan protocol aplikasi seperti HTTP atau DNS. Dalam security, PCAP membantu menjawab: host mana berkomunikasi, protokol apa digunakan, kapan terjadi, dan apakah ada pola tidak wajar.</p>
+<p>Filtering adalah keterampilan inti. Display filter seperti HTTP, DNS, IP sumber/tujuan, atau TCP port membantu mempersempit data. Tanpa filter, analyst tenggelam dalam ribuan paket. Namun filter tidak boleh membuat analyst kehilangan konteks. Pola sebelum dan sesudah event sering penting.</p>
+<h4>Dari attack simulation ke detection</h4>
+<p>Dalam lab legal, aktivitas seperti scanning, percobaan login gagal, atau request web anomali dapat direkam sebagai traffic. Blue Team melihatnya sebagai sinyal: banyak koneksi ke port berbeda, request dengan pola input tidak biasa, status code error berulang, atau DNS query mencurigakan. Wazuh dapat mengumpulkan log host, memantau file integrity, dan menghasilkan alert berdasarkan rule.</p>
+<h4>Defensive workflow</h4>
+<p>Workflow sederhana adalah capture, filter, identify, correlate, dan report. Identify berarti menentukan apa yang terlihat. Correlate berarti menghubungkan PCAP dengan log web server, auth log, atau alert SIEM. Report berarti menulis timeline, indikator, dampak, dan rekomendasi. Analyst yang baik tidak hanya berkata “ada serangan”, tetapi menunjukkan bukti dan konteks.</p>
+<h4>Skenario lapangan</h4>
+<p>Dalam simulasi lab, aplikasi Juice Shop menerima banyak request error pada endpoint login. Wireshark menunjukkan pola HTTP POST berulang; Wazuh menerima log failed login; dashboard SIEM membuat alert medium. Defender menambahkan rate limiting, alert threshold, dan review autentikasi.</p>
+
+<div class="chapter-code"><div class="code-label">SAFE LAB TERMINAL</div><pre><code># Analisis PCAP lab
+wireshark lab-traffic.pcapng
+# Alternatif CLI jika tersedia:
+tshark -r lab-traffic.pcapng -Y &quot;http&quot; -T fields -e ip.src -e http.request.uri | head</code></pre></div>
+<div class="chapter-glossary"><h4>Istilah yang Masuk ke Glossary</h4><div class="term-cloud"><span class="term-chip">pcap</span><span class="term-chip">packet</span><span class="term-chip">wireshark</span><span class="term-chip">display filter</span><span class="term-chip">wazuh</span><span class="term-chip">siem</span><span class="term-chip">alert</span><span class="term-chip">traffic analysis</span></div></div>
+</article>
+</section>
+<section class="section reveal" id="references">
+<div class="section-title"><h2>M // References</h2><span class="section-code">VALIDATED READING NODE</span></div>
+<p class="section-note">Referensi dipisahkan agar recruit bisa lanjut belajar dari sumber kredibel. Link eksternal dibuka di tab baru; buku ditulis sebagai judul tanpa URL jika tidak ada halaman resmi tunggal yang stabil.</p>
+<div class="card-grid two">
+<div class="reference-group card source-card"><h3 class="ref-group-title">Website / Artikel Teknis</h3><div class="ref-list compact"><a href="https://www.wireshark.org/docs/wsug_html_chunked/" target="_blank" rel="noopener noreferrer"><span class="ref-text"><b>Wireshark User’s Guide</b><small>Dokumentasi penggunaan Wireshark.</small></span><span>DOC</span></a><a href="https://www.wireshark.org/docs/dfref/" target="_blank" rel="noopener noreferrer"><span class="ref-text"><b>Wireshark Display Filter Reference</b><small>Referensi filter display.</small></span><span>DOC</span></a><a href="https://documentation.wazuh.com/current/index.html" target="_blank" rel="noopener noreferrer"><span class="ref-text"><b>Wazuh Documentation</b><small>Dokumentasi Wazuh SIEM/XDR.</small></span><span>DOC</span></a><a href="https://www.malware-traffic-analysis.net/" target="_blank" rel="noopener noreferrer"><span class="ref-text"><b>Malware Traffic Analysis</b><small>PCAP latihan aman dan edukatif.</small></span><span>DOC</span></a></div></div>
+<div class="reference-group card source-card"><h3 class="ref-group-title">Jurnal Akademik / Paper Publik</h3><div class="ref-list compact"><a href="https://arxiv.org/abs/2605.13337" target="_blank" rel="noopener noreferrer"><span class="ref-text"><b>Context-Aware Web Attack Detection in Open-Source SIEM Systems via MITRE ATT&amp;CK-Enriched Behavioral Profiling</b><small>Riset SIEM/Wazuh dan deteksi web attack.</small></span><span>PAPER</span></a><a href="https://arxiv.org/abs/2304.07411" target="_blank" rel="noopener noreferrer"><span class="ref-text"><b>SoK: The MITRE ATT&amp;CK Framework in Research and Practice</b><small>Kaitan ATT&amp;CK dengan deteksi dan threat hunting.</small></span><span>PAPER</span></a></div></div>
+<div class="reference-group card source-card"><h3 class="ref-group-title">Rekomendasi Buku</h3><div class="ref-list compact"><div class="ref-static"><span class="ref-text"><b>Practical Packet Analysis — Chris Sanders</b></span><span>BOOK</span></div><div class="ref-static"><span class="ref-text"><b>Network Security Monitoring — Richard Bejtlich</b></span><span>BOOK</span></div></div></div>
+<div class="reference-group card source-card"><h3 class="ref-group-title">Video Pembelajaran</h3><div class="ref-list compact"><a href="https://www.youtube.com/c/SharkFestWiresharkDeveloperandUserConference" target="_blank" rel="noopener noreferrer"><span class="ref-text"><b>SharkFest Wireshark YouTube</b><small>Talks dan tutorial Wireshark.</small></span><span>VIDEO</span></a><a href="https://www.youtube.com/chrisgreer" target="_blank" rel="noopener noreferrer"><span class="ref-text"><b>Chris Greer Wireshark YouTube</b><small>Tutorial Wireshark praktis.</small></span><span>VIDEO</span></a></div></div>
+</div>
+</section>
+<section class="section reveal" id="summary">
+<div class="section-title"><h2>N // Summary</h2><span class="section-code">MISSION 17 COMPLETE</span></div>
+<div class="terminal">&gt;_ Mission ini menanamkan fondasi Blue Team &amp; Forensics.
+&gt;_ Poin wajib diingat: pahami konsep, jaga legalitas, dokumentasikan bukti, pikirkan mitigasi, dan hubungkan materi dengan mission berikutnya.
+&gt;_ PORTFOLIO OUTPUT: Buat PCAP analysis note: tujuan lab, filter yang dipakai, paket penting, screenshot Wireshark, interpretasi, dan ide rule deteksi.
+&gt;_ NEXT OBJECTIVE: Analyze Attack &amp; Defense — Wireshark &amp; Wazuh Part 2</div>
+<div class="cta-row">
+<a class="btn ghost" href="mission-16.html">Previous Mission</a>
+<a class="btn" href="mission-18.html">Next Mission</a>
+</div>
+</section>
+</div>
+</main>
+</div>
+<div aria-label="Command palette" aria-modal="true" class="command-palette" role="dialog">
+<div class="command-box">
+<input autocomplete="off" id="commandInput" placeholder="root@nexus:~# search mission, tools, glossary...">
+<div class="command-hint">Ctrl/⌘ + K untuk membuka. Esc untuk menutup.</div>
+<div class="command-results">
+<a data-command-item="" href="../index.html"><b>ARCHIVE HOME</b><small>Root dashboard 20 mission</small></a><a data-command-item="" href="../bonus.html"><b>BONUS ARCHIVE</b><small>7 module tambahan</small></a><a data-command-item="" href="../glossary.html"><b>GLOSSARY DATABASE</b><small>Istilah cyber security</small></a><a data-command-item="" href="../tools.html"><b>TOOLS DATABASE</b><small>Database tools legal</small></a><a data-command-item="" href="../references.html"><b>REFERENCE DATABASE</b><small>Buku, dokumentasi, lab</small></a><a data-command-item="" href="../portfolio.html"><b>PORTFOLIO BUILDER</b><small>Output portofolio setiap mission</small></a><a data-command-item="" href="../progress.html"><b>PROGRESS TRACKER</b><small>Status belajar localStorage</small></a><a data-command-item="" href="../missions/mission-01.html"><b>MISSION-01 — Cyber Security Fundamental &amp; Understanding Penetration Testing</b><small>Foundation // Beginner</small></a><a data-command-item="" href="../missions/mission-02.html"><b>MISSION-02 — Introduction &amp; Understanding How Linux Works</b><small>Foundation // Beginner</small></a><a data-command-item="" href="../missions/mission-03.html"><b>MISSION-03 — Networking Fundamental</b><small>Foundation // Beginner</small></a><a data-command-item="" href="../missions/mission-04.html"><b>MISSION-04 — Fundamental Web Framework &amp; Cara Kerja Aplikasi</b><small>Foundation // Beginner+</small></a><a data-command-item="" href="../missions/mission-05.html"><b>MISSION-05 — Information Disclosure &amp; Sensitive Data Exposure</b><small>Web Security // Beginner+</small></a><a data-command-item="" href="../missions/mission-06.html"><b>MISSION-06 — Exploiting Broken Authentication &amp; Session Management; IDOR &amp; Broken Access Control</b><small>Web Security // Intermediate</small></a><a data-command-item="" href="../missions/mission-07.html"><b>MISSION-07 — CSRF &amp; Unrestricted File Upload</b><small>Web Security // Intermediate</small></a><a data-command-item="" href="../missions/mission-08.html"><b>MISSION-08 — SQL Injection Ultimate</b><small>Web Security // Intermediate</small></a><a data-command-item="" href="../missions/mission-09.html"><b>MISSION-09 — Clickjacking, HTML Injection &amp; XSS</b><small>Web Security // Intermediate</small></a><a data-command-item="" href="../missions/mission-10.html"><b>MISSION-10 — Server-Side Request Forgery</b><small>Web Security // Intermediate+</small></a><a data-command-item="" href="../missions/mission-11.html"><b>MISSION-11 — CTF — Capture The Flag</b><small>CTF &amp; Pentest Lab // Intermediate</small></a><a data-command-item="" href="../missions/mission-12.html"><b>MISSION-12 — Hacking Server Machine Series</b><small>CTF &amp; Pentest Lab // Intermediate+</small></a><a data-command-item="" href="../missions/mission-13.html"><b>MISSION-13 — Bug Bounty Fun &amp; Profit</b><small>CTF &amp; Pentest Lab // Intermediate</small></a><a data-command-item="" href="../missions/mission-14.html"><b>MISSION-14 — Android Penetration Testing — Static Analysis</b><small>Mobile &amp; AI // Intermediate+</small></a><a data-command-item="" href="../missions/mission-15.html"><b>MISSION-15 — Android Penetration Testing — Dynamic Analysis</b><small>Mobile &amp; AI // Intermediate+</small></a><a data-command-item="" href="../missions/mission-16.html"><b>MISSION-16 — AI Agents for Penetration Testing — Practical Usage</b><small>Mobile &amp; AI // Advanced Intro</small></a><a data-command-item="" href="../missions/mission-17.html"><b>MISSION-17 — Building Attack &amp; Defense — Wireshark &amp; Wazuh Part 1</b><small>Blue Team &amp; Forensics // Intermediate+</small></a><a data-command-item="" href="../missions/mission-18.html"><b>MISSION-18 — Analyze Attack &amp; Defense — Wireshark &amp; Wazuh Part 2</b><small>Blue Team &amp; Forensics // Advanced Intro</small></a><a data-command-item="" href="../missions/mission-19.html"><b>MISSION-19 — Digital Forensics &amp; Cyber Attack Investigation</b><small>Blue Team &amp; Forensics // Advanced Intro</small></a><a data-command-item="" href="../missions/mission-20.html"><b>MISSION-20 — Grooming CV, LinkedIn &amp; Karier Talenta Keamanan Siber</b><small>Career // Beginner+</small></a>
+</div>
+</input></div>
+</div>
+<script src="../assets/js/main.js"></script>
+</body>
+</html>
