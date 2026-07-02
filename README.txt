@@ -55,3 +55,17 @@ TEXTBOOK REVISION:
 - Section O di setiap mission sekarang berisi bab materi langsung, bukan outline belajar.
 - Format memakai heading, paragraf penjelas, blockquote, command lab aman, dan istilah untuk glossary.
 - Command yang dicantumkan dibatasi untuk localhost, lab legal, CTF, atau sistem milik sendiri/berizin.
+
+
+--- REVISION NOTE: MINIMALIST LINUX DESKTOP MODE ---
+This revised build keeps the original NEXUS-01 content and UX features, including boot loader, scroll-sync progress bar, command palette, mission progress, filters, live terminal logs, and background packet animation.
+
+Visual changes implemented:
+- Minimalist Linux desktop / OS simulator interface.
+- Solid dark panels for better long-form readability.
+- Top desktop bar with workspace tabs and real-time English date/time.
+- Sidebar redesigned as file-manager mission directory.
+- Added fastfetch-style system identity panels.
+- Added browser-safe simulated btop/system monitor.
+- Added operator notes and threat feed desktop windows.
+- Rebalanced palette from heavy yellow cyberpunk into dark Linux workstation cyan/green accents.
