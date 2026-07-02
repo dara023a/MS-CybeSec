@@ -60,12 +60,24 @@
 
   const reveals = $$('.reveal');
   if(prefersReduced || !('IntersectionObserver' in window)){
-    reveals.forEach(el=>el.classList.add('visible'));
+    reveals.forEach(el=>{
+      el.classList.remove('reveal-pending');
+      el.classList.add('visible');
+    });
   } else {
     const io = new IntersectionObserver((entries)=>{
-      entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('visible'); });
+      entries.forEach(e=>{
+        if(e.isIntersecting){
+          e.target.classList.add('visible');
+          e.target.classList.remove('reveal-pending');
+          io.unobserve(e.target);
+        }
+      });
     }, {threshold:.12});
-    reveals.forEach(el=>io.observe(el));
+    reveals.forEach(el=>{
+      el.classList.add('reveal-pending');
+      io.observe(el);
+    });
   }
 
   const palette = $('.command-palette');
@@ -184,6 +196,12 @@
     const prefix = getAssetPrefix();
     const topbar = $('.topbar');
     if(topbar && !$('.desktop-workspaces', topbar)){
+      const archiveTitle = $('.archive-title', topbar);
+      if(archiveTitle){
+        const pageTitle = (document.title.split('|')[0] || 'NEXUS-01').trim();
+        archiveTitle.textContent = pageTitle.toUpperCase();
+        archiveTitle.setAttribute('title', pageTitle);
+      }
       const workspaces = document.createElement('nav');
       workspaces.className = 'desktop-workspaces';
       workspaces.setAttribute('aria-label','Desktop workspaces');
@@ -198,7 +216,6 @@
       else if(path.includes('/progress')) active = 'progress';
       else if(path.includes('/references') || path.includes('/glossary') || path.includes('/bonus') || path.includes('/portfolio')) active = 'intel';
       $$('.workspace-tab', workspaces).forEach(tab=>tab.classList.toggle('active', tab.dataset.workspace === active));
-      const archiveTitle = $('.archive-title', topbar);
       topbar.insertBefore(workspaces, archiveTitle || topbar.children[1] || null);
     }
     if(topbar && !$('.desktop-clock', topbar)){
