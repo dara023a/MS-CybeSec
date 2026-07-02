@@ -1,6 +1,6 @@
 
 (function(){
-  const stateKey = 'nexus01-progress-v1';
+  const stateKey = 'dazik01-progress-v1';
   const statuses = ['Not Started', 'Learning', 'Completed', 'Need Review'];
   const $ = (sel, root=document) => root.querySelector(sel);
   const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
@@ -9,7 +9,7 @@
   const loader = $('.boot-loader');
   if(loader){
     const lines = [
-      '[BOOT] booting NEXUS-01 Linux desktop shell...',
+      '[BOOT] booting DAZIK-01 Linux desktop shell...',
       '[KERNEL] loading minimalist workstation interface...',
       '[WM] mounting mission directory and scroll-sync daemon...',
       '[ACCESS] operator profile: RECRUIT // AUTHORIZED LAB ONLY',
@@ -109,7 +109,9 @@
   });
 
   function getProgress(){
-    try { return JSON.parse(localStorage.getItem(stateKey) || '{}') || {}; }
+    try {
+      return JSON.parse(localStorage.getItem(stateKey) || '{}') || {};
+    }
     catch(e){ return {}; }
   }
   function setProgress(state){ localStorage.setItem(stateKey, JSON.stringify(state)); }
@@ -156,6 +158,50 @@
   window.addEventListener('storage', syncProgressUI);
   syncProgressUI();
 
+  function exportProgress(){
+    const payload = {
+      app:'DAZIK-01 Cyber Security Engineer Bootcamp',
+      version:1,
+      exportedAt:new Date().toISOString(),
+      storageKey:stateKey,
+      progress:getProgress()
+    };
+    const blob = new Blob([JSON.stringify(payload, null, 2)], {type:'application/json'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `dazik01-progress-${new Date().toISOString().slice(0,10)}.json`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  }
+
+  function importProgress(file){
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const parsed = JSON.parse(String(reader.result || '{}'));
+        const incoming = parsed.progress && typeof parsed.progress === 'object' ? parsed.progress : parsed;
+        const clean = {};
+        Object.entries(incoming).forEach(([id,value])=>{
+          if(!/^mission-\d{2}$/.test(id) || !value || typeof value !== 'object') return;
+          const status = statuses.includes(value.status) ? value.status : 'Not Started';
+          clean[id] = {...value, status};
+        });
+        setProgress(clean);
+        syncProgressUI();
+        const msg = $('[data-progress-import-status]');
+        if(msg) msg.textContent = `Import berhasil: ${Object.keys(clean).length} mission dipulihkan.`;
+      } catch(e) {
+        const msg = $('[data-progress-import-status]');
+        if(msg) msg.textContent = 'Import gagal: file JSON tidak valid.';
+      }
+    };
+    reader.readAsText(file);
+  }
+
 
   function initLiveTerminalLogs(){
     $$('.live-terminal-log').forEach(log=>{
@@ -171,16 +217,186 @@
   }
   initLiveTerminalLogs();
 
-  $$('[data-filter-input]').forEach(inp=>{
-    inp.addEventListener('input',()=>{
-      const scope = inp.closest('.section') || document;
-      const q = inp.value.toLowerCase().trim();
-      $$('[data-filter-card]', scope).forEach(card=>{
-        const text = (card.dataset.search || card.textContent || '').toLowerCase();
-        card.hidden = q && !text.includes(q);
+  function ensureSearchMeta(scope){
+    if(!scope) return [];
+    if(document.body.dataset.page === 'references'){
+      $$('.ref-list a', scope).forEach(item=>{
+        item.dataset.filterCard = item.dataset.filterCard || '';
+        item.dataset.search = item.dataset.search || item.textContent.replace(/\s+/g, ' ').trim();
       });
+    }
+    const items = $$('[data-filter-card]', scope);
+    items.forEach(item=>{
+      item.dataset.search = item.dataset.search || item.textContent.replace(/\s+/g, ' ').trim();
+      if(document.body.dataset.page === 'glossary'){
+        item.dataset.term = item.dataset.term || ($('h3', item)?.textContent || '').trim();
+        item.dataset.letter = (item.dataset.term[0] || '#').toUpperCase();
+        item.dataset.missions = item.dataset.missions || $$('.badge', item).map(b=>b.textContent.trim()).join(' ');
+      }
     });
-  });
+    return items;
+  }
+
+  function updateSourceGroups(scope){
+    $$('.source-card', scope).forEach(card=>{
+      const children = $$('[data-filter-card]', card);
+      card.hidden = children.length > 0 && children.every(child=>child.hidden);
+    });
+  }
+
+  function ensureCounter(scope, input, total){
+    let counter = $('[data-filter-count]', scope);
+    if(!counter){
+      counter = document.createElement('div');
+      counter.className = 'filter-count status-micro';
+      counter.dataset.filterCount = '';
+      const panel = input.closest('.search-panel');
+      if(panel) panel.appendChild(counter);
+    }
+    const sectionCode = $('.section-code', scope);
+    if(sectionCode && !$('[data-progress-summary]', sectionCode)) sectionCode.dataset.liveFilterCode = '';
+    counter.textContent = `${total} hasil ditemukan`;
+  }
+
+  function ensureEmptyState(scope){
+    let empty = $('[data-empty-state]', scope);
+    if(!empty){
+      empty = document.createElement('div');
+      empty.className = 'empty-state status-micro';
+      empty.dataset.emptyState = '';
+      empty.hidden = true;
+      empty.textContent = '0 hasil ditemukan. Coba kata kunci lain atau reset filter.';
+      const grid = $('[data-filter-grid]', scope) || $('.card-grid,.progress-table-wrap', scope) || scope;
+      grid.insertAdjacentElement('afterend', empty);
+    }
+    return empty;
+  }
+
+  function activeGlossaryMission(scope){
+    const active = $('[data-mission-filter].active', scope);
+    return active ? active.dataset.missionFilter : 'all';
+  }
+
+  function applyFilter(scope){
+    const input = $('[data-filter-input]', scope);
+    const items = ensureSearchMeta(scope);
+    if(!input || !items.length) return;
+    const q = input.value.toLowerCase().trim();
+    const mission = document.body.dataset.page === 'glossary' ? activeGlossaryMission(scope) : 'all';
+    let visible = 0;
+    items.forEach(item=>{
+      const text = (item.dataset.search || item.textContent || '').toLowerCase();
+      const missionText = (item.dataset.missions || item.textContent || '').toLowerCase();
+      const queryMatch = !q || text.includes(q);
+      const missionMatch = mission === 'all' || missionText.includes(mission.toLowerCase());
+      const show = queryMatch && missionMatch;
+      item.hidden = !show;
+      if(show) visible += 1;
+    });
+    updateSourceGroups(scope);
+    const empty = ensureEmptyState(scope);
+    empty.hidden = visible !== 0;
+    const total = items.length;
+    const label = q || mission !== 'all' ? `${visible}/${total} hasil ditemukan` : `${total} hasil ditemukan`;
+    const counter = $('[data-filter-count]', scope);
+    if(counter) counter.textContent = label;
+    const sectionCode = $('[data-live-filter-code]', scope);
+    if(sectionCode) sectionCode.textContent = label.toUpperCase();
+  }
+
+  function initGlobalFilters(){
+    $$('[data-filter-input]').forEach(inp=>{
+      const scope = inp.closest('.section') || document;
+      const items = ensureSearchMeta(scope);
+      ensureCounter(scope, inp, items.length);
+      ensureEmptyState(scope);
+      inp.addEventListener('input',()=>applyFilter(scope));
+      applyFilter(scope);
+    });
+  }
+
+  function initGlossaryEnhancements(){
+    if(document.body.dataset.page !== 'glossary') return;
+    const section = $('#database');
+    const grid = $('.card-grid', section);
+    const searchPanel = $('.search-panel', section);
+    if(!section || !grid || !searchPanel) return;
+    grid.dataset.filterGrid = '';
+    const cards = $$('.card[data-filter-card]', grid).sort((a,b)=>{
+      const at = ($('h3', a)?.textContent || '').trim();
+      const bt = ($('h3', b)?.textContent || '').trim();
+      return at.localeCompare(bt, 'id', {sensitivity:'base'});
+    });
+    cards.forEach(card=>grid.appendChild(card));
+    ensureSearchMeta(section);
+
+    const missions = new Set();
+    cards.forEach(card=>{
+      const text = card.dataset.missions || '';
+      text.match(/Mission\s+\d+/g)?.forEach(m=>missions.add(m));
+    });
+    if(!$('[data-glossary-az]', section)){
+      const nav = document.createElement('nav');
+      nav.className = 'az-nav';
+      nav.dataset.glossaryAz = '';
+      nav.setAttribute('aria-label','Navigasi alfabet glossary');
+      const letters = new Set(cards.map(card=>card.dataset.letter).filter(letter=>/^[A-Z]$/.test(letter)));
+      nav.innerHTML = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').map(letter=>{
+        const disabled = letters.has(letter) ? '' : ' aria-disabled="true" tabindex="-1"';
+        return `<a href="#glossary-${letter}" data-az-jump="${letter}"${disabled}>${letter}</a>`;
+      }).join('');
+      searchPanel.insertAdjacentElement('beforebegin', nav);
+      nav.addEventListener('click', e=>{
+        const link = e.target.closest('[data-az-jump]');
+        if(!link || link.getAttribute('aria-disabled') === 'true') return;
+        e.preventDefault();
+        const target = cards.find(card=>!card.hidden && card.dataset.letter === link.dataset.azJump) || cards.find(card=>card.dataset.letter === link.dataset.azJump);
+        target?.scrollIntoView({behavior:prefersReduced ? 'auto' : 'smooth', block:'start'});
+      });
+    }
+    if(!$('[data-mission-filters]', section)){
+      const chips = document.createElement('div');
+      chips.className = 'filter-chips';
+      chips.dataset.missionFilters = '';
+      chips.innerHTML = `<button class="active" type="button" data-mission-filter="all">All Mission</button>` +
+        Array.from(missions).sort((a,b)=>parseInt(a.match(/\d+/)[0],10)-parseInt(b.match(/\d+/)[0],10))
+          .map(m=>`<button type="button" data-mission-filter="${m}">${m}</button>`).join('');
+      searchPanel.insertAdjacentElement('afterend', chips);
+      chips.addEventListener('click', e=>{
+        const btn = e.target.closest('[data-mission-filter]');
+        if(!btn) return;
+        $$('[data-mission-filter]', chips).forEach(chip=>chip.classList.toggle('active', chip === btn));
+        applyFilter(section);
+      });
+    }
+    cards.forEach(card=>{
+      const letter = card.dataset.letter;
+      if(letter && !$(`#glossary-${letter}`, grid)){
+        card.id = `glossary-${letter}`;
+      }
+    });
+  }
+
+  function initReferencesSearchPanel(){
+    if(document.body.dataset.page !== 'references') return;
+    const section = $('#database');
+    if(!section || $('[data-filter-input]', section)) return;
+    const note = $('.section-note', section);
+    const panel = document.createElement('div');
+    panel.className = 'search-panel';
+    panel.innerHTML = '<input aria-label="Search references" data-filter-input placeholder="search reference: OWASP, NIST, Wireshark, Android, AI..."/>';
+    (note || $('.section-title', section)).insertAdjacentElement('afterend', panel);
+  }
+
+  function initProgressPortability(){
+    const exportBtn = $('[data-progress-export]');
+    const importInput = $('[data-progress-import]');
+    exportBtn?.addEventListener('click', exportProgress);
+    importInput?.addEventListener('change', e=>{
+      importProgress(e.target.files && e.target.files[0]);
+      e.target.value = '';
+    });
+  }
 
   /* Linux desktop simulator layer: top workspaces, English clock, fastfetch,
      simulated system monitor, notes, and threat feed. Browser-safe values only. */
@@ -198,7 +414,7 @@
     if(topbar && !$('.desktop-workspaces', topbar)){
       const archiveTitle = $('.archive-title', topbar);
       if(archiveTitle){
-        const pageTitle = (document.title.split('|')[0] || 'NEXUS-01').trim();
+        const pageTitle = (document.title.split('|')[0] || 'DAZIK-01').trim();
         archiveTitle.textContent = pageTitle.toUpperCase();
         archiveTitle.setAttribute('title', pageTitle);
       }
@@ -236,11 +452,11 @@
         <strong>FASTFETCH</strong>
         <div class="fastfetch-grid" style="margin-top:10px">
           <pre class="ascii-logo">   /\\
-  /  \\   NEXUS
+  /  \\   DAZIK
  / /\\ \\  LINUX
 /_/  \\_\\ DESKTOP</pre>
           <div class="fetch-lines">
-            <div><b>OS</b><span>NEXUS-01 SOC 2089</span></div>
+            <div><b>OS</b><span>DAZIK-01 SOC 2089</span></div>
             <div><b>Kernel</b><span>secure-learning</span></div>
             <div><b>Shell</b><span>zsh / web-sim</span></div>
             <div><b>WM</b><span>Mission Tiles</span></div>
@@ -281,7 +497,7 @@
         <div class="linux-window-body">
           <div class="fastfetch-grid">
             <pre class="ascii-logo">      .--.
-     |o_o |   NEXUS-01
+     |o_o |   DAZIK-01
      |:_/ |   Linux Desktop
     //   \\ \\  SOC 2089
    (|     | )
@@ -289,7 +505,7 @@
   \\___)=(___/</pre>
             <div class="fetch-lines">
               <div><b>Operator</b><span>RECRUIT</span></div>
-              <div><b>Host</b><span>nexus01.local</span></div>
+              <div><b>Host</b><span>dazik01.local</span></div>
               <div><b>Page</b><span>${document.title.replace(/</g,'&lt;')}</span></div>
               <div><b>Mission</b><span>${current}</span></div>
               <div><b>Stack</b><span>HTML / CSS / JS</span></div>
@@ -308,7 +524,7 @@
             <div class="sys-row"><b>DISK</b><div class="sys-track"><i data-sys-bar="disk"></i></div><span data-sys-value="disk">--%</span></div>
             <div class="sys-row"><b>NET</b><div class="sys-track"><i data-sys-bar="net"></i></div><span data-sys-value="net">--%</span></div>
           </div>
-          <div class="command-mini" style="margin-top:12px"><b>root@nexus</b>:~$ scroll-sync --status
+          <div class="command-mini" style="margin-top:12px"><b>root@dazik</b>:~$ scroll-sync --status
 <span class="dim">active · progress bar linked to document scroll</span></div>
         </div>
       </article>
@@ -346,6 +562,10 @@
 
   initLinuxDesktopShell();
   initDesktopControlCenter();
+  initReferencesSearchPanel();
+  initGlossaryEnhancements();
+  initGlobalFilters();
+  initProgressPortability();
   syncProgressUI();
   updateSimulatedSystemMonitor();
   setInterval(updateSimulatedSystemMonitor, 1800);
